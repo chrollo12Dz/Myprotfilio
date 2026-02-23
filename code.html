@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mohamed's Desktop</title>
+<!-- Tailwind CSS CDN with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- BEGIN: Tailwind Configuration -->
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            winGrey: '#c0c0c0',
+            winDarkGrey: '#808080',
+            winBlue: '#000080',
+            winWhite: '#ffffff',
+          },
+          fontFamily: {
+            msSans: ['"MS Sans Serif"', 'Tahoma', 'sans-serif'],
+          },
+          animation: {
+            'glitch': 'glitch 1s linear infinite',
+          },
+          keyframes: {
+            glitch: {
+              '2%, 64%': { transform: 'translate(2px,0) skew(0deg)' },
+              '4%, 60%': { transform: 'translate(-2px,0) skew(0deg)' },
+              '62%': { transform: 'translate(0,0) skew(5deg)' },
+            },
+          },
+        },
+      },
+    }
+  </script>
+<!-- END: Tailwind Configuration -->
+<!-- BEGIN: Custom Retro Styles -->
+<style data-purpose="win95-ui-theme">
+    body {
+      background-color: #000;
+      overflow: hidden;
+      font-family: 'Tahoma', sans-serif;
+    }
+
+    /* Windows 95 Bevel Shadows */
+    .win-outset {
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #808080;
+      border-bottom: 2px solid #808080;
+      box-shadow: 1px 1px 0 0 #000;
+    }
+
+    .win-inset {
+      border-top: 2px solid #808080;
+      border-left: 2px solid #808080;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+    }
+
+    .win-button:active {
+      border-top: 2px solid #808080;
+      border-left: 2px solid #808080;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      padding-top: 2px;
+      padding-left: 2px;
+    }
+
+    .title-bar {
+      background: linear-gradient(90deg, #000080, #1084d0);
+    }
+
+    /* Starfield Animation */
+    #starfield {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    /* Glitch Effect */
+    .glitch-text {
+      text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff;
+      position: relative;
+    }
+    
+    /* Desktop Icon Hover */
+    .desktop-icon:hover {
+      background-color: rgba(0, 0, 128, 0.3);
+      outline: 1px dotted #fff;
+    }
+
+    /* Window Draggable Emulation */
+    .window {
+      position: absolute;
+      min-width: 280px;
+    }
+    
+    @media (max-width: 640px) {
+      .window {
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        margin-bottom: 1rem;
+      }
+      #desktop-area {
+        overflow-y: auto;
+        padding-bottom: 50px;
+      }
+    }
+  </style>
+<!-- END: Custom Retro Styles -->
+</head>
+<body class="h-screen flex flex-col">
+<!-- BEGIN: Canvas Starfield Background -->
+<canvas data-purpose="background-animation" id="starfield"></canvas>
+<!-- END: Canvas Starfield Background -->
+<!-- BEGIN: Desktop Workspace -->
+<main class="flex-grow relative p-4 overflow-hidden" id="desktop-area">
+<!-- Desktop Icons Column -->
+<div class="flex flex-col gap-6 w-20 z-10 relative" data-purpose="desktop-icons">
+<div class="desktop-icon flex flex-col items-center cursor-pointer group" onclick="toggleWindow('about-win')">
+<div class="w-10 h-10 mb-1 bg-blue-100 flex items-center justify-center border-2 border-white">
+<span class="text-xs">👤</span>
+</div>
+<span class="text-white text-[10px] text-center font-bold px-1 bg-black/50">About.txt</span>
+</div>
+<div class="desktop-icon flex flex-col items-center cursor-pointer group" onclick="toggleWindow('links-win')">
+<div class="w-10 h-10 mb-1 bg-yellow-100 flex items-center justify-center border-2 border-white">
+<span class="text-xs">🔗</span>
+</div>
+<span class="text-white text-[10px] text-center font-bold px-1 bg-black/50">Links.url</span>
+</div>
+<div class="desktop-icon flex flex-col items-center cursor-pointer group" onclick="toggleWindow('music-win')">
+<div class="w-10 h-10 mb-1 bg-green-100 flex items-center justify-center border-2 border-white">
+<span class="text-xs">🎵</span>
+</div>
+<span class="text-white text-[10px] text-center font-bold px-1 bg-black/50">Player.exe</span>
+</div>
+<div class="desktop-icon flex flex-col items-center cursor-pointer group" onclick="toggleWindow('contact-win')">
+<div class="w-10 h-10 mb-1 bg-red-100 flex items-center justify-center border-2 border-white">
+<span class="text-xs">✉️</span>
+</div>
+<span class="text-white text-[10px] text-center font-bold px-1 bg-black/50">Contact.msg</span>
+</div>
+</div>
+<!-- BEGIN: About Window -->
+<div class="window win-outset bg-winGrey p-1 z-20 sm:left-32 sm:top-10 sm:w-80" data-purpose="profile-window" id="about-win">
+<div class="title-bar h-6 flex items-center justify-between px-1 cursor-move">
+<div class="flex items-center gap-1">
+<span class="text-[10px] text-white font-bold ml-1">About Mohamed</span>
+</div>
+<button class="win-outset bg-winGrey w-4 h-4 text-[10px] flex items-center justify-center leading-none" onclick="toggleWindow('about-win')">X</button>
+</div>
+<div class="bg-white p-4 m-1 win-inset overflow-auto max-h-96">
+<h1 class="text-2xl font-black mb-2 glitch-text animate-glitch italic uppercase">Mohamed</h1>
+<p class="text-xs mb-4 border-b border-black pb-2">Programmer | Security Enthusiast | Musician</p>
+<div class="text-[11px] leading-tight space-y-2">
+<p>I build things for the web and explore the depths of cybersecurity. When the terminal is closed, I'm making noise with synths.</p>
+<p class="font-bold">Primary Skills:</p>
+<ul class="list-disc pl-4">
+<li>C++ / JavaScript / Rust</li>
+<li>Penetration Testing</li>
+<li>Logic Pro / Sound Design</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- END: About Window -->
+<!-- BEGIN: Links Window -->
+<div class="window win-outset bg-winGrey p-1 z-30 hidden sm:left-[450px] sm:top-20 sm:w-64" data-purpose="links-window" id="links-win">
+<div class="title-bar h-6 flex items-center justify-between px-1">
+<span class="text-[10px] text-white font-bold ml-1">Links.url</span>
+<button class="win-outset bg-winGrey w-4 h-4 text-[10px] flex items-center justify-center" onclick="toggleWindow('links-win')">X</button>
+</div>
+<div class="p-2 space-y-2 text-[12px]">
+<a class="block win-outset bg-winGrey p-2 hover:bg-winWhite flex items-center gap-2" href="#">
+<span>🐙</span> GitHub
+        </a>
+<a class="block win-outset bg-winGrey p-2 hover:bg-winWhite flex items-center gap-2" href="#">
+<span>🐦</span> Twitter
+        </a>
+<a class="block win-outset bg-winGrey p-2 hover:bg-winWhite flex items-center gap-2" href="#">
+<span>☁️</span> SoundCloud
+        </a>
+<a class="block win-outset bg-winGrey p-2 hover:bg-winWhite flex items-center gap-2" href="#">
+<span>📡</span> RSS Feed
+        </a>
+</div>
+</div>
+<!-- END: Links Window -->
+<!-- BEGIN: Music Window -->
+<div class="window win-outset bg-winGrey p-1 z-40 hidden sm:left-40 sm:top-64 sm:w-72" data-purpose="music-player" id="music-win">
+<div class="title-bar h-6 flex items-center justify-between px-1">
+<span class="text-[10px] text-white font-bold ml-1">Winamp 2.0 (Lite)</span>
+<button class="win-outset bg-winGrey w-4 h-4 text-[10px] flex items-center justify-center" onclick="toggleWindow('music-win')">X</button>
+</div>
+<div class="bg-black text-green-500 p-2 m-1 border-2 border-winDarkGrey font-mono text-[10px]">
+<div class="flex justify-between items-center mb-2">
+<span>02:34</span>
+<span>STERE-O</span>
+</div>
+<div class="text-center py-2 truncate uppercase tracking-widest">Mohamed - Cyberpunk_Beat.wav</div>
+<div class="h-1 bg-green-900 w-full mb-2">
+<div class="h-full bg-green-400 w-2/3"></div>
+</div>
+<div class="flex justify-center gap-2">
+<button class="win-outset bg-winGrey text-black px-2 py-0.5">◀◀</button>
+<button class="win-outset bg-winGrey text-black px-2 py-0.5">▶</button>
+<button class="win-outset bg-winGrey text-black px-2 py-0.5">■</button>
+<button class="win-outset bg-winGrey text-black px-2 py-0.5">▶▶</button>
+</div>
+</div>
+</div>
+<!-- END: Music Window -->
+<!-- BEGIN: Contact Window -->
+<div class="window win-outset bg-winGrey p-1 z-50 hidden sm:right-20 sm:top-32 sm:w-80" data-purpose="contact-form" id="contact-win">
+<div class="title-bar h-6 flex items-center justify-between px-1">
+<span class="text-[10px] text-white font-bold ml-1">New Message</span>
+<button class="win-outset bg-winGrey w-4 h-4 text-[10px] flex items-center justify-center" onclick="toggleWindow('contact-win')">X</button>
+</div>
+<form class="p-2 space-y-2 text-[11px]">
+<div class="flex gap-2 items-center">
+<label class="w-12">To:</label>
+<input class="win-inset bg-winWhite flex-grow px-1 outline-none" readonly="" type="text" value="mohamed@localhost"/>
+</div>
+<div class="flex gap-2 items-center">
+<label class="w-12">Subject:</label>
+<input class="win-inset bg-winWhite flex-grow px-1 outline-none" type="text"/>
+</div>
+<textarea class="win-inset bg-winWhite w-full h-24 p-1 outline-none resize-none" placeholder="Write your message here..."></textarea>
+<div class="flex justify-end">
+<button class="win-outset bg-winGrey px-4 py-1 active:shadow-inner" onclick="alert('Message Sent!')" type="button">Send</button>
+</div>
+</form>
+</div>
+<!-- END: Contact Window -->
+</main>
+<!-- END: Desktop Workspace -->
+<!-- BEGIN: Taskbar -->
+<footer class="h-10 bg-winGrey win-outset flex items-center px-1 gap-1 z-[100] shrink-0">
+<!-- Start Button -->
+<button class="win-outset px-1 h-7 flex items-center gap-1 font-bold italic active:border-inset" data-purpose="start-menu-trigger">
+<span class="bg-blue-600 text-white text-[10px] p-0.5">田</span>
+<span class="text-xs">Start</span>
+</button>
+<div class="w-px h-6 bg-winDarkGrey mx-1"></div>
+<!-- Active Tasks (Visual only) -->
+<div class="flex gap-1 overflow-x-auto flex-grow h-full items-center py-1">
+<div class="win-inset bg-winWhite/30 px-2 h-7 flex items-center gap-1 min-w-[100px] shrink-0">
+<span class="text-[10px]">👤</span>
+<span class="text-[10px] truncate">About Mohamed</span>
+</div>
+</div>
+<!-- System Tray -->
+<div class="win-inset flex items-center px-2 h-7 gap-2 shrink-0">
+<span class="text-[10px]">📡</span>
+<span class="text-[10px]">🔊</span>
+<span class="text-[10px] font-bold" id="clock">12:00 PM</span>
+</div>
+</footer>
+<!-- END: Taskbar -->
+<!-- BEGIN: Scripts -->
+<script data-purpose="clock-update">
+    function updateClock() {
+      const now = new Date();
+      const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('clock').textContent = time;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+<script data-purpose="window-manager">
+    function toggleWindow(id) {
+      const win = document.getElementById(id);
+      if (win.classList.contains('hidden')) {
+        win.classList.remove('hidden');
+        // Simple z-index management
+        document.querySelectorAll('.window').forEach(w => w.style.zIndex = '20');
+        win.style.zIndex = '50';
+      } else {
+        win.classList.add('hidden');
+      }
+    }
+
+    // Draggable logic for desktop (minimal implementation)
+    let isDragging = false;
+    let currentTarget = null;
+    let offset = { x: 0, y: 0 };
+
+    document.addEventListener('mousedown', (e) => {
+      const titleBar = e.target.closest('.title-bar');
+      if (titleBar) {
+        isDragging = true;
+        currentTarget = titleBar.parentElement;
+        const rect = currentTarget.getBoundingClientRect();
+        offset.x = e.clientX - rect.left;
+        offset.y = e.clientY - rect.top;
+        
+        // Bring to front
+        document.querySelectorAll('.window').forEach(w => w.style.zIndex = '20');
+        currentTarget.style.zIndex = '50';
+      }
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (isDragging && currentTarget && window.innerWidth > 640) {
+        currentTarget.style.left = `${e.clientX - offset.x}px`;
+        currentTarget.style.top = `${e.clientY - offset.y}px`;
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+      currentTarget = null;
+    });
+  </script>
+<script data-purpose="canvas-setup">
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    class Star {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.z = Math.random() * canvas.width;
+        this.size = 0.5;
+      }
+      update() {
+        this.z -= 2;
+        if (this.z <= 0) this.reset();
+        this.sx = (this.x - canvas.width / 2) * (canvas.width / this.z) + canvas.width / 2;
+        this.sy = (this.y - canvas.height / 2) * (canvas.width / this.z) + canvas.height / 2;
+      }
+      draw() {
+        ctx.fillStyle = "white";
+        ctx.beginPath();
+        ctx.arc(this.sx, this.sy, (1 - this.z / canvas.width) * 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 200; i++) stars.push(new Star());
+
+    function animate() {
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(s => {
+        s.update();
+        s.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    animate();
+  </script>
+<!-- END: Scripts -->
+</body></html>
