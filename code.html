@@ -186,9 +186,8 @@
 <a class="block win-outset bg-winGrey p-2 hover:bg-winWhite flex items-center gap-2" href="#">
 <span>🐦</span> Twitter
         </a>
-    <audio id="bg-music" loop>
+    <audio id="bg-music" autoplay loop>
   <source src="TOOL - Schism (Official Video).mp3" type="audio/mpeg">
-  Your browser does not support the audio element.
 </audio>
 </div>
 </div>
@@ -366,13 +365,27 @@
     }
 
     
-function startBackgroundMusic() {
-  const audio = document.getElementById('bg-music');
-  audio.play().then(() => {
-    document.removeEventListener('click', startBackgroundMusic);
-  }).catch(error => {
-    console.log("Waiting for user interaction to play audio...");
-  });
+const audio = document.getElementById('bg-music');
+
+// Attempt to play immediately on load
+const playPromise = audio.play();
+
+if (playPromise !== undefined) {
+    playPromise.catch(error => {
+        // Auto-play was prevented. 
+        // We will now wait for the very first user interaction to start it.
+        const startOnInteraction = () => {
+            audio.play();
+            // Remove listeners so they don't trigger again
+            document.removeEventListener('click', startOnInteraction);
+            document.removeEventListener('keydown', startOnInteraction);
+            document.removeEventListener('touchstart', startOnInteraction);
+        };
+
+        document.addEventListener('click', startOnInteraction);
+        document.addEventListener('keydown', startOnInteraction);
+        document.addEventListener('touchstart', startOnInteraction);
+    });
 }
 
 // Global listener for the first interaction
