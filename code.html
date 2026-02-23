@@ -365,28 +365,27 @@
     }
 
     
+// 1. Get the audio element
 const audio = document.getElementById('bg-music');
 
-// Attempt to play immediately on load
-const playPromise = audio.play();
-
-if (playPromise !== undefined) {
-    playPromise.catch(error => {
-        // Auto-play was prevented. 
-        // We will now wait for the very first user interaction to start it.
-        const startOnInteraction = () => {
-            audio.play();
-            // Remove listeners so they don't trigger again
-            document.removeEventListener('click', startOnInteraction);
-            document.removeEventListener('keydown', startOnInteraction);
-            document.removeEventListener('touchstart', startOnInteraction);
-        };
-
-        document.addEventListener('click', startOnInteraction);
-        document.addEventListener('keydown', startOnInteraction);
-        document.addEventListener('touchstart', startOnInteraction);
+// 2. Create the function that starts the music
+const startMusic = () => {
+    // Try to play the music
+    audio.play().then(() => {
+        console.log("Music started successfully");
+        // Once it starts, stop listening for more clicks/touches
+        document.removeEventListener('click', startMusic);
+        document.removeEventListener('touchstart', startMusic);
+        document.removeEventListener('keydown', startMusic);
+    }).catch(error => {
+        console.log("Playback failed, waiting for user interaction.");
     });
-}
+};
+
+// 3. Listen for any interaction (Click, Mobile Touch, or Key Press)
+document.addEventListener('click', startMusic);
+document.addEventListener('touchstart', startMusic);
+document.addEventListener('keydown', startMusic);
 
 // Global listener for the first interaction
 document.addEventListener('click', startBackgroundMusic);
