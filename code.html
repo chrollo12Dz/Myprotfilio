@@ -186,7 +186,10 @@
 <a class="block win-outset bg-winGrey p-2 hover:bg-winWhite flex items-center gap-2" href="#">
 <span>🐦</span> Twitter
         </a>
-    
+    <audio id="bg-music" loop>
+  <source src="Schism (Official Video).mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
 </div>
 </div>
 <!-- END: Links Window -->
@@ -362,6 +365,20 @@
       requestAnimationFrame(animate);
     }
 
+    // Function to start the background music
+function startBackgroundMusic() {
+  const audio = document.getElementById('bg-music');
+  
+  audio.play().then(() => {
+    // Once playing, remove the listener so further clicks don't reset it
+    document.removeEventListener('click', startBackgroundMusic);
+  }).catch(error => {
+    console.log("Waiting for user interaction to play audio...");
+  });
+}
+
+// Global listener for the first interaction
+document.addEventListener('click', startBackgroundMusic);
     window.addEventListener('resize', resize);
     resize();
     animate();
